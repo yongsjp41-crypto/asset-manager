@@ -1,0 +1,490 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>资产管理 · 台账与扫码盘点</title>
+<link rel="stylesheet" href="styles.css">
+<style id="printStyle"></style>
+</head>
+<body>
+
+<!-- ============ 登录门 ============ -->
+<div id="loginGate" class="login-gate" hidden>
+  <form id="loginForm" class="login-card" autocomplete="off">
+    <div class="brand login-brand">
+      <div class="brand-mark">资</div>
+      <div>
+        <h1>资产管理系统</h1>
+        <p>资产台账 · 扫码盘点</p>
+      </div>
+    </div>
+    <label class="field"><span>登录名</span>
+      <input type="text" id="loginName" class="input" placeholder="请输入登录名" autocomplete="username">
+    </label>
+    <label class="field"><span>密码</span>
+      <input type="password" id="loginPass" class="input" placeholder="请输入密码" autocomplete="current-password">
+    </label>
+    <p class="login-error" id="loginError" hidden></p>
+    <button type="submit" class="btn btn-primary login-btn">登 录</button>
+  </form>
+</div>
+
+<div id="appBody" hidden>
+
+<header class="topbar">
+  <div class="brand">
+    <div class="brand-mark">资</div>
+    <div>
+      <h1>资产管理</h1>
+      <p>资产台账 · 扫码盘点</p>
+    </div>
+  </div>
+  <div class="top-actions">
+    <span class="user-chip" id="userChip"></span>
+    <button type="button" id="btnLogout" class="btn btn-ghost" hidden>退出登录</button>
+    <button type="button" id="btnBackup" class="btn btn-ghost">备份数据</button>
+    <button type="button" id="btnRestore" class="btn btn-ghost">恢复数据</button>
+    <button type="button" id="btnHelp" class="btn btn-ghost">使用说明</button>
+  </div>
+</header>
+
+<nav class="tabs" id="tabs">
+  <button type="button" class="tab active" data-view="assets">资产台账</button>
+  <button type="button" class="tab" data-view="count">扫码盘点</button>
+  <button type="button" class="tab" data-view="history">盘点记录</button>
+  <button type="button" class="tab" data-view="labels">标签打印</button>
+  <button type="button" class="tab" data-view="users" id="tabUsers" hidden>人员管理</button>
+</nav>
+
+<main>
+
+  <!-- ============ 资产台账 ============ -->
+  <section class="view" id="view-assets">
+    <div class="toolbar">
+      <input type="search" id="assetSearch" class="input" placeholder="搜索编号 / 名称 / 位置 / 保管人">
+      <select id="filterStatus" class="input select"><option value="">全部状态</option></select>
+      <select id="filterLocation" class="input select"><option value="">全部位置</option></select>
+      <span class="spacer"></span>
+      <button type="button" id="btnImport" class="btn">导入 CSV</button>
+      <button type="button" id="btnExportAssets" class="btn">导出 CSV</button>
+      <button type="button" id="btnPrintLabels" class="btn">打印标签</button>
+      <button type="button" id="btnAdd" class="btn btn-primary">+ 新增资产</button>
+    </div>
+
+    <div class="list-meta"><span id="assetMeta">共 0 项资产</span><span id="selectedMeta"></span></div>
+
+    <div class="card table-card">
+      <div class="table-scroll">
+        <table class="table" id="assetTable">
+          <thead>
+            <tr>
+              <th class="col-check"><input type="checkbox" id="checkAll" aria-label="全选"></th>
+              <th>资产编号</th>
+              <th>资产名称</th>
+              <th>分类</th>
+              <th>位置</th>
+              <th>保管人</th>
+              <th>状态</th>
+              <th>备注</th>
+              <th class="col-ops">操作</th>
+            </tr>
+          </thead>
+          <tbody id="assetBody"></tbody>
+        </table>
+      </div>
+      <div class="empty" id="emptyAssets" hidden>
+        <div class="empty-icon">▤</div>
+        <p id="emptyText">台账还是空的，先添加资产或导入 CSV。</p>
+        <div class="empty-actions">
+          <button type="button" class="btn btn-primary" id="btnAddEmpty">+ 新增资产</button>
+          <button type="button" class="btn" id="btnDemo">载入示例数据</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 扫码盘点 ============ -->
+  <section class="view hidden" id="view-count">
+
+    <!-- 新建盘点 -->
+    <div id="countSetup" class="card setup-card">
+      <h2>新建盘点</h2>
+      <p class="muted">选择本次要盘点的资产范围，开始后逐件扫码核对。</p>
+      <div class="form-grid">
+        <label class="field">
+          <span>盘点名称</span>
+          <input type="text" id="countName" class="input" placeholder="例如：2026 年末全盘">
+        </label>
+        <label class="field">
+          <span>盘点范围</span>
+          <select id="scopeField" class="input">
+            <option value="all">全部资产</option>
+            <option value="location">按位置</option>
+            <option value="category">按分类</option>
+            <option value="status">按状态</option>
+          </select>
+        </label>
+        <label class="field" id="scopeValueField" hidden>
+          <span>范围取值</span>
+          <select id="scopeValue" class="input"></select>
+        </label>
+      </div>
+      <div class="setup-foot">
+        <span class="muted" id="scopeHint">本次应盘 0 项</span>
+        <button type="button" id="btnStartCount" class="btn btn-primary">开始盘点</button>
+      </div>
+      <p class="notice" id="setupNotice" hidden></p>
+    </div>
+
+    <!-- 盘点进行中 -->
+    <div id="countRun" class="hidden">
+      <div class="card count-head">
+        <div>
+          <div class="count-title"><h2 id="runName"></h2><span class="badge badge-blue">进行中</span></div>
+          <p class="muted" id="runScope"></p>
+        </div>
+        <div class="count-head-right">
+          <button type="button" id="btnFinishCount" class="btn btn-primary">结束盘点</button>
+          <button type="button" id="btnCancelCount" class="btn btn-ghost">放弃</button>
+        </div>
+      </div>
+
+      <div class="progress-card card">
+        <div class="progress-line"><strong id="progressText">0 / 0</strong><span class="muted" id="progressPct">0%</span></div>
+        <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+      </div>
+
+      <div class="scan-layout">
+        <div class="card scan-card">
+          <div class="scan-stage" id="scanStage">
+            <video id="video" playsinline muted></video>
+            <div class="scan-frame" id="scanFrame" hidden></div>
+            <div class="scan-placeholder" id="scanPlaceholder">
+              <div class="scan-placeholder-icon">▣</div>
+              <p>开启摄像头后，将资产二维码对准取景框</p>
+              <button type="button" id="btnCamera" class="btn btn-primary">开启摄像头扫码</button>
+              <p class="tiny muted" id="cameraHint"></p>
+            </div>
+          </div>
+          <div class="scan-actions">
+            <button type="button" id="btnStopCamera" class="btn" hidden>关闭摄像头</button>
+            <span class="muted tiny" id="scanEngine"></span>
+          </div>
+          <div class="manual-row">
+            <input type="text" id="manualCode" class="input" placeholder="无法扫码？手动输入资产编号后按回车">
+            <button type="button" id="btnManual" class="btn">确认</button>
+          </div>
+          <div class="feedback" id="feedback" aria-live="polite"></div>
+        </div>
+
+        <div class="card found-card">
+          <div class="card-head"><h3>本次已盘</h3><span class="badge" id="foundBadge">0</span></div>
+          <ul class="found-list" id="foundList"></ul>
+        </div>
+      </div>
+
+      <div class="card missing-card">
+        <div class="card-head"><h3>未盘清单</h3><span class="badge badge-red" id="missingBadge">0</span></div>
+        <div id="missingList" class="missing-list"></div>
+      </div>
+
+      <div class="card checklist-card">
+        <div class="card-head">
+          <h3>盘点清单</h3>
+          <div class="ck-filters" id="ckFilters">
+            <button type="button" class="btn btn-sm active" data-ck="all">全部</button>
+            <button type="button" class="btn btn-sm" data-ck="pending">未盘</button>
+            <button type="button" class="btn btn-sm" data-ck="done">已盘</button>
+          </div>
+          <span class="badge" id="ckMeta"></span>
+        </div>
+        <div class="table-scroll">
+          <table class="table ck-table">
+            <thead>
+              <tr><th>资产编号</th><th>名称</th><th>位置</th><th>保管人</th><th>盘点状态</th></tr>
+            </thead>
+            <tbody id="ckBody"></tbody>
+          </table>
+        </div>
+        <span class="badge" id="ckBadge" hidden></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 盘点记录 ============ -->
+  <section class="view hidden" id="view-history">
+    <div class="list-meta"><span id="historyMeta">共 0 条盘点记录</span></div>
+    <div id="historyList"></div>
+    <div class="empty" id="emptyHistory" hidden>
+      <div class="empty-icon">◷</div>
+      <p>还没有已结束的盘点记录。</p>
+      <button type="button" class="btn" id="btnGoCount">去盘点</button>
+    </div>
+  </section>
+
+  <!-- ============ 标签打印 ============ -->
+  <section class="view hidden" id="view-labels">
+    <div class="labels-layout">
+      <div class="labels-left">
+
+        <div class="card panel">
+          <div class="card-head"><h3>① 标签模板</h3><span class="badge" id="tplBadge">预设</span></div>
+          <div class="panel-body">
+            <div class="tpl-picker" id="tplPicker"></div>
+            <div class="row-line">
+              <button type="button" id="btnTplSave" class="btn">另存为模板</button>
+              <button type="button" id="btnTplDelete" class="btn btn-danger" disabled>删除当前模板</button>
+            </div>
+            <div class="form-grid tight">
+              <label class="field"><span>标签宽 mm</span><input type="number" id="tplLabelW" class="input" min="10" max="300" step="1"></label>
+              <label class="field"><span>标签高 mm</span><input type="number" id="tplLabelH" class="input" min="10" max="300" step="1"></label>
+              <label class="field"><span>纸张宽 mm</span><input type="number" id="tplPageW" class="input" min="10" max="500" step="1"></label>
+              <label class="field"><span>纸张高 mm</span><input type="number" id="tplPageH" class="input" min="10" max="500" step="1"></label>
+              <label class="field"><span>每页列数</span><input type="number" id="tplCols" class="input" min="1" max="10" step="1"></label>
+              <label class="field"><span>标签间距 mm</span><input type="number" id="tplGap" class="input" min="0" max="20" step="0.5"></label>
+              <label class="field"><span>页边距 mm</span><input type="number" id="tplMargin" class="input" min="0" max="40" step="0.5"></label>
+              <label class="field"><span>二维码边长 mm</span><input type="number" id="tplQr" class="input" min="5" max="100" step="1"></label>
+              <label class="field"><span>文字大小 pt</span><input type="number" id="tplFont" class="input" min="5" max="24" step="0.5"></label>
+              <label class="field"><span>设计样式</span><select id="tplStyle" class="input"><option value="classic">经典（二维码在侧）</option><option value="center">居中大码</option><option value="hero">头部色块</option><option value="table">表格明细</option></select></label>
+              <label class="field"><span>顶部标题（可留空）</span><input type="text" id="tplTitle" class="input" placeholder="如：资产管理" maxlength="10"></label>
+              <label class="field"><span>排版（仅经典样式）</span><select id="tplLayout" class="input"><option value="row">二维码在左</option><option value="column">二维码在上</option></select></label>
+            </div>
+            <div class="field-block">
+              <span class="field-label">标签上显示的字段</span>
+              <div class="check-grid" id="tplFields">
+                <label><input type="checkbox" value="id" checked disabled> 资产编号</label>
+                <label><input type="checkbox" value="name"> 资产名称</label>
+                <label><input type="checkbox" value="category"> 分类</label>
+                <label><input type="checkbox" value="location"> 位置</label>
+                <label><input type="checkbox" value="keeper"> 保管人</label>
+                <label><input type="checkbox" value="status"> 状态</label>
+                <label><input type="checkbox" value="note"> 备注</label>
+              </div>
+            </div>
+            <div class="check-grid compact">
+              <label><input type="checkbox" id="tplShowQr" checked> 显示二维码</label>
+              <label class="frame-line">边框
+                <select id="tplFrame" class="input input-inline">
+                  <option value="none">无边框</option>
+                  <option value="dashed">虚线裁切框</option>
+                  <option value="solid">实线框</option>
+                  <option value="double">双线框</option>
+                </select>
+              </label>
+            </div>
+            <div class="panel-foot">
+              <button type="button" id="btnTplApply" class="btn btn-primary">更新预览</button>
+              <span class="muted tiny" id="tplHint">调整参数后点「更新预览」</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card panel">
+          <div class="card-head"><h3>② 打印范围</h3><span class="badge" id="labelScopeBadge">0 张</span></div>
+          <div class="panel-body">
+            <div class="radio-list" id="labelScope">
+              <label><input type="radio" name="labelScope" value="selected"> 台账中已勾选的 <b id="scopeSelectedCount">0</b> 项</label>
+              <label><input type="radio" name="labelScope" value="filtered"> 台账当前筛选结果 <b id="scopeFilteredCount">0</b> 项</label>
+              <label><input type="radio" name="labelScope" value="all" checked> 全部资产 <b id="scopeAllCount">0</b> 项</label>
+              <label><input type="radio" name="labelScope" value="one"> 只打印一项（下方选择）</label>
+            </div>
+            <select id="labelOneAsset" class="input" hidden></select>
+          </div>
+        </div>
+
+        <div class="card panel">
+          <div class="card-head"><h3>③ 输出到打印机</h3><span class="badge" id="serialBadge">未连接</span></div>
+          <div class="panel-body">
+            <div class="print-actions">
+              <button type="button" id="btnStdPrint" class="btn btn-primary">标准打印（选打印机）</button>
+              <button type="button" id="btnPrintTest" class="btn">打印测试页</button>
+            </div>
+            <p class="muted tiny print-tip">会打开系统打印对话框，可选任意打印机或另存为 PDF。请在打印设置里关闭页眉页脚、缩放设为 100%、边距设为「无」，纸张尺寸按模板填写。</p>
+            <div class="serial-box">
+              <div class="serial-title">直连标签打印机（USB / 串口，跳过打印对话框）</div>
+              <div class="row-line">
+                <select id="serialProto" class="input"><option value="tspl">TSPL（TSC / 汉印 / 佳博等）</option><option value="zpl">ZPL（Zebra 斑马）</option></select>
+                <select id="serialBaud" class="input"><option value="9600">9600</option><option value="115200">115200</option></select>
+                <select id="serialDpi" class="input"><option value="203">203 dpi</option><option value="300">300 dpi</option></select>
+              </div>
+              <div class="row-line">
+                <button type="button" id="btnSerialConnect" class="btn">连接设备</button>
+                <button type="button" id="btnSerialPrint" class="btn btn-primary" disabled>直接打印标签</button>
+                <button type="button" id="btnSerialTest" class="btn" disabled>测试标签</button>
+                <button type="button" id="btnSerialClose" class="btn btn-ghost" disabled>断开</button>
+              </div>
+              <p class="muted tiny" id="serialHint">需 Chrome / Edge 并在 localhost 或 HTTPS 下使用；直连模式只打印二维码与资产编号，中文内容请用标准打印。</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="labels-right">
+        <div class="card panel preview-panel">
+          <div class="card-head preview-head">
+            <h3>标签预览</h3>
+            <div class="preview-ctrls">
+              <button type="button" id="btnPrevPage" class="mini-btn" title="上一页" disabled>‹</button>
+              <span class="page-info" id="pageInfo">1/1 页</span>
+              <button type="button" id="btnNextPage" class="mini-btn" title="下一页" disabled>›</button>
+              <span class="v-sep"></span>
+              <button type="button" id="btnZoomOut" class="mini-btn" title="缩小">−</button>
+              <span class="page-info" id="zoomInfo">适应</span>
+              <button type="button" id="btnZoomIn" class="mini-btn" title="放大">＋</button>
+              <button type="button" id="btnZoomFit" class="mini-btn" title="适应宽度">适应</button>
+            </div>
+            <span class="badge" id="previewMeta">0 张</span>
+          </div>
+          <div class="preview-body">
+            <div class="preview-wrap" id="previewWrap">
+              <div class="label-sheet preview-sheet" id="labelPreview"></div>
+            </div>
+            <p class="muted tiny" id="previewNote"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- ============ 人员管理（仅管理员） ============ -->
+  <section class="view hidden" id="view-users">
+    <div class="toolbar">
+      <span class="muted">账号决定登录后能看到哪些数据；人员账号只能看到「保管人 = 本人」的资产。</span>
+      <span class="spacer"></span>
+      <button type="button" id="btnAddUser" class="btn btn-primary">+ 新增账号</button>
+    </div>
+    <div class="list-meta"><span id="usersMeta">共 0 个账号</span></div>
+    <div class="card table-card">
+      <div class="table-scroll">
+        <table class="table">
+          <thead>
+            <tr><th>姓名</th><th>登录名</th><th>角色</th><th>密码</th><th>创建时间</th><th class="col-ops">操作</th></tr>
+          </thead>
+          <tbody id="usersBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============ 资产编辑 ============ -->
+<dialog id="assetDialog" class="dialog">
+  <form id="assetForm">
+    <div class="dialog-head"><h2 id="assetDialogTitle">新增资产</h2><button type="button" class="icon-btn" data-close="assetDialog" aria-label="关闭">×</button></div>
+    <div class="dialog-body form-grid">
+      <label class="field"><span>资产编号 <em>*</em> <em class="id-hint" id="assetIdHint"></em></span><input name="id" class="input" required placeholder="唯一编号，也是二维码内容" autocomplete="off"></label>
+      <label class="field"><span>资产名称 <em>*</em></span><input name="name" class="input" required placeholder="例如：笔记本电脑" autocomplete="off"></label>
+      <label class="field"><span>分类</span><input name="category" class="input" list="categoryOptions" placeholder="例如：电子设备" autocomplete="off"><datalist id="categoryOptions"></datalist></label>
+      <label class="field"><span>存放位置</span><input name="location" class="input" list="locationOptions" placeholder="例如：3 楼会议室" autocomplete="off"><datalist id="locationOptions"></datalist></label>
+      <label class="field"><span>保管人</span><input name="keeper" class="input" placeholder="例如：张伟" autocomplete="off"></label>
+      <label class="field"><span>状态</span><select name="status" class="input" id="assetStatus"></select></label>
+      <label class="field field-wide"><span>备注</span><input name="note" class="input" placeholder="选填" autocomplete="off"></label>
+      <div class="field field-wide">
+        <span>资产照片</span>
+        <input type="file" id="assetPhotoInput" accept="image/*" hidden>
+        <div class="photo-slot">
+          <div class="photo-empty" id="photoEmpty">
+            <button type="button" class="btn" id="btnPickPhoto">上传照片</button>
+            <span class="tiny muted">选择后自动压缩到约 40KB 再上传，省流量也省空间</span>
+          </div>
+          <div class="photo-preview" id="photoPreview" hidden>
+            <img id="photoThumb" alt="资产照片">
+            <div class="photo-meta">
+              <p class="tiny muted" id="photoInfo"></p>
+              <div class="photo-ops">
+                <button type="button" class="btn btn-sm" id="btnReplacePhoto">更换</button>
+                <button type="button" class="btn btn-sm btn-danger" id="btnRemovePhoto">移除</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="dialog-foot">
+      <button type="button" class="btn" data-close="assetDialog">取消</button>
+      <button type="submit" class="btn btn-primary">保存</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- ============ 照片查看 ============ -->
+<dialog id="photoDialog" class="dialog dialog-sm">
+  <div class="dialog-head"><h2 id="photoDialogTitle">资产照片</h2><button type="button" class="icon-btn" data-close="photoDialog" aria-label="关闭">×</button></div>
+  <div class="dialog-body photo-view"><img id="photoBig" alt="资产照片"></div>
+  <div class="dialog-foot"><button type="button" class="btn" data-close="photoDialog">关闭</button></div>
+</dialog>
+
+<!-- ============ 二维码 ============ -->
+<dialog id="qrDialog" class="dialog dialog-sm">
+  <div class="dialog-head"><h2>资产二维码</h2><button type="button" class="icon-btn" data-close="qrDialog" aria-label="关闭">×</button></div>
+  <div class="dialog-body qr-body">
+    <div id="qrImage" class="qr-image"></div>
+    <p class="qr-code" id="qrCode"></p>
+    <p class="muted tiny">打印后贴在资产上，即可用于扫码盘点。</p>
+  </div>
+  <div class="dialog-foot">
+    <button type="button" class="btn" data-close="qrDialog">关闭</button>
+    <button type="button" class="btn btn-primary" id="btnPrintOne">用模板打印</button>
+  </div>
+</dialog>
+
+<!-- ============ 账号编辑 ============ -->
+<dialog id="userDialog" class="dialog dialog-sm">
+  <form id="userForm" autocomplete="off">
+    <div class="dialog-head"><h2 id="userDialogTitle">新增账号</h2><button type="button" class="icon-btn" data-close="userDialog" aria-label="关闭">×</button></div>
+    <div class="dialog-body form-grid">
+      <label class="field"><span>登录名 <em>*</em></span><input name="username" class="input" required placeholder="登录用的账号名" autocomplete="off"></label>
+      <label class="field"><span>姓名 <em>*</em></span><input name="name" class="input" required placeholder="用于显示和匹配保管人" autocomplete="off"></label>
+      <label class="field"><span>密码</span><input type="password" name="password" class="input" placeholder="设置登录密码" autocomplete="new-password"></label>
+      <label class="field"><span>角色</span><select name="role" class="input"><option value="staff">人员（只见自己保管的资产）</option><option value="admin">管理员（全部数据）</option></select></label>
+    </div>
+    <p class="notice">注意：人员的「姓名」要和资产台账里的「保管人」写法完全一致（如：张伟），系统按姓名匹配展示其保管的资产。</p>
+    <div class="dialog-foot">
+      <button type="button" class="btn" data-close="userDialog">取消</button>
+      <button type="submit" class="btn btn-primary">保存</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- ============ 使用说明 ============ -->
+<dialog id="helpDialog" class="dialog">
+  <div class="dialog-head"><h2>使用说明</h2><button type="button" class="icon-btn" data-close="helpDialog" aria-label="关闭">×</button></div>
+  <div class="dialog-body help-body">
+    <ol>
+      <li><strong>建档</strong>：在「资产台账」新增资产，或用「导入 CSV」批量导入；资产编号是唯一标识，建议用字母数字组合。导入的表头可用：资产编号、资产名称、分类、存放位置、保管人、状态、备注（UTF-8 编码）。新增/编辑时可上传资产照片，系统自动压缩到约 40KB 再上传，用于留档核对。</li>
+      <li><strong>贴码</strong>：在「标签打印」选模板与范围，预览确认后用标准打印或直连标签机打印，把标签贴到资产上。模板可改尺寸、字段、排版并另存；台账里勾选资产后点「打印标签」会直接跳转过来。</li>
+      <li><strong>盘点</strong>：在「扫码盘点」选择范围后开始，开启摄像头逐件扫码；无摄像头时用手动输入框录入编号。</li>
+      <li><strong>结果</strong>：实时显示已盘 / 未盘，结束后自动生成记录，可导出 CSV 作为盘亏清单。</li>
+    </ol>
+    <p class="notice">台账与盘点记录保存在本机浏览器（不上传）；资产照片会压缩到约 40KB 后上传到服务器，换电脑登录也能看到。换设备或清理浏览器数据前，请用顶部「备份数据」导出 JSON 文件；恢复时点「恢复数据」。</p>
+    <p class="muted tiny">摄像头需要 HTTPS 或 localhost 环境。若双击打开本文件无法扫码，请在本目录运行 <code>python3 -m http.server 8000</code>，然后访问 <code>http://localhost:8000</code>。</p>
+  </div>
+  <div class="dialog-foot"><button type="button" class="btn btn-primary" data-close="helpDialog">知道了</button></div>
+</dialog>
+
+<!-- ============ 盘点结果 ============ -->
+<dialog id="resultDialog" class="dialog">
+  <div class="dialog-head"><h2 id="resultTitle">盘点结果</h2><button type="button" class="icon-btn" data-close="resultDialog" aria-label="关闭">×</button></div>
+  <div class="dialog-body" id="resultBody"></div>
+  <div class="dialog-foot">
+    <button type="button" class="btn" data-close="resultDialog">关闭</button>
+    <button type="button" class="btn btn-primary" id="btnExportResult">导出结果 CSV</button>
+  </div>
+</dialog>
+
+<!-- ============ 打印标签 ============ -->
+<div id="labelSheet" class="label-sheet"></div>
+
+<input type="file" id="fileCsv" accept=".csv,text/csv" hidden>
+<input type="file" id="fileJson" accept=".json,application/json" hidden>
+<div id="toast" class="toast" aria-live="polite"></div>
+
+</div><!-- /appBody -->
+
+<script src="vendor/qrcode.js"></script>
+<script src="vendor/jsQR.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
