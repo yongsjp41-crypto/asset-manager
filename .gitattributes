@@ -1,0 +1,16 @@
+* text=auto eol=lf
+
+*.html text
+*.js text
+*.css text
+*.mjs text
+*.json text
+*.md text
+*.yml text
+*.yaml text
+
+# 单文件构建产物与二进制资源不参与行尾转换
+资产管理.html binary
+*.png binary
+*.jpg binary
+*.jpeg binary

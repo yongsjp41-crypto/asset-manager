@@ -1,0 +1,35 @@
+{
+  "name": "asset-manager",
+  "version": "1.0.0",
+  "description": "纯前端资产台账与扫码盘点的单页应用：资产建档、照片压缩上传、二维码标签打印、摄像头与串口扫码盘点，数据存于浏览器 localStorage，无需后端与构建依赖。",
+  "license": "MIT",
+  "private": false,
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "build": "node build-standalone.mjs",
+    "serve": "python3 -m http.server 8000",
+    "check": "node --check app.js && node --check build-standalone.mjs"
+  },
+  "keywords": [
+    "asset-management",
+    "qrcode",
+    "inventory",
+    "offline-first",
+    "vanilla-js",
+    "label-printing"
+  ],
+  "files": [
+    "index.html",
+    "app.js",
+    "styles.css",
+    "vendor/",
+    "build-standalone.mjs",
+    "docs/",
+    "examples/",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ]
+}

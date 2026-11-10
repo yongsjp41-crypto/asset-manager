@@ -1,0 +1,201 @@
+{
+  "app": "asset-manager",
+  "version": 3,
+  "exportedAt": "2026-11-10T00:00:00.000Z",
+  "assets": [
+    {
+      "id": "ZC-20261101-001",
+      "name": "笔记本电脑",
+      "category": "电子设备",
+      "location": "3 楼办公区",
+      "keeper": "张伟",
+      "status": "在用",
+      "note": "含电源适配器与扩展坞",
+      "photo": "data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27160%27%20height%3D%27120%27%3E%3Crect%20width%3D%27160%27%20height%3D%27120%27%20fill%3D%27%23dbe4ee%27%2F%3E%3Ctext%20x%3D%2780%27%20y%3D%2766%27%20font-size%3D%2714%27%20text-anchor%3D%27middle%27%20fill%3D%27%23334455%27%3E%E7%A4%BA%E4%BE%8B%E7%85%A7%E7%89%87%3C%2Ftext%3E%3C%2Fsvg%3E",
+      "createdAt": 1793495520000
+    },
+    {
+      "id": "ZC-20261101-002",
+      "name": "台式主机",
+      "category": "电子设备",
+      "location": "3 楼办公区",
+      "keeper": "张伟",
+      "status": "在用",
+      "note": "",
+      "photo": "",
+      "createdAt": 1793495700000
+    },
+    {
+      "id": "ZC-20261102-001",
+      "name": "激光打印机",
+      "category": "电子设备",
+      "location": "2 楼文印室",
+      "keeper": "王强",
+      "status": "维修",
+      "note": "频繁卡纸，待厂家上门",
+      "photo": "",
+      "createdAt": 1793585100000
+    },
+    {
+      "id": "ZC-20261103-001",
+      "name": "投影仪",
+      "category": "电子设备",
+      "location": "3 楼会议室",
+      "keeper": "李娜",
+      "status": "在用",
+      "note": "含遥控器与 HDMI 线",
+      "photo": "",
+      "createdAt": 1793686800000
+    },
+    {
+      "id": "ZC-20261103-002",
+      "name": "办公桌",
+      "category": "家具",
+      "location": "3 楼办公区",
+      "keeper": "张伟",
+      "status": "在用",
+      "note": "1.4 米，含侧柜",
+      "photo": "",
+      "createdAt": 1793686920000
+    },
+    {
+      "id": "ZC-20261104-001",
+      "name": "人体工学椅",
+      "category": "家具",
+      "location": "3 楼办公区",
+      "keeper": "陈晨",
+      "status": "闲置",
+      "note": "备用工位，扶手有轻微磨损",
+      "photo": "",
+      "createdAt": 1793752800000
+    },
+    {
+      "id": "ZC-20261105-001",
+      "name": "文件柜",
+      "category": "家具",
+      "location": "档案室",
+      "keeper": "赵敏",
+      "status": "在用",
+      "note": "四层，带锁，钥匙在行政处",
+      "photo": "data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27160%27%20height%3D%27120%27%3E%3Crect%20width%3D%27160%27%20height%3D%27120%27%20fill%3D%27%23e4e9db%27%2F%3E%3Ctext%20x%3D%2780%27%20y%3D%2766%27%20font-size%3D%2714%27%20text-anchor%3D%27middle%27%20fill%3D%27%23344533%27%3E%E7%A4%BA%E4%BE%8B%E7%85%A7%E7%89%87%3C%2Ftext%3E%3C%2Fsvg%3E",
+      "createdAt": 1793849400000
+    },
+    {
+      "id": "ZC-20261106-001",
+      "name": "碎纸机",
+      "category": "电子设备",
+      "location": "2 楼文印室",
+      "keeper": "王强",
+      "status": "报废",
+      "note": "电机烧毁，待处置",
+      "photo": "",
+      "createdAt": 1793951100000
+    },
+    {
+      "id": "ZC-20261107-001",
+      "name": "服务器机柜",
+      "category": "设备",
+      "location": "机房",
+      "keeper": "李娜",
+      "status": "在用",
+      "note": "22U，含 2 台交换机",
+      "photo": "",
+      "createdAt": 1794013200000
+    },
+    {
+      "id": "ZC-20261108-001",
+      "name": "UPS 电源",
+      "category": "设备",
+      "location": "机房",
+      "keeper": "李娜",
+      "status": "维修",
+      "note": "电池组待更换，已联系供应商",
+      "photo": "",
+      "createdAt": 1794103800000
+    },
+    {
+      "id": "ZC-20261109-001",
+      "name": "显示器",
+      "category": "电子设备",
+      "location": "3 楼办公区",
+      "keeper": "陈晨",
+      "status": "闲置",
+      "note": "27 英寸，备用",
+      "photo": "",
+      "createdAt": 1794212700000
+    },
+    {
+      "id": "ZC-20261110-001",
+      "name": "扫描仪",
+      "category": "电子设备",
+      "location": "2 楼文印室",
+      "keeper": "王强",
+      "status": "报废",
+      "note": "已拆件，外壳留存",
+      "photo": "",
+      "createdAt": 1794272700000
+    }
+  ],
+  "stocktakes": [
+    {
+      "id": "CT1794272400000",
+      "name": "2026-11 三楼办公区盘点",
+      "scope": {
+        "field": "location",
+        "value": "3 楼办公区"
+      },
+      "createdAt": 1794272400000,
+      "finishedAt": 1794277800000,
+      "expected": [
+        "ZC-20261101-001",
+        "ZC-20261101-002",
+        "ZC-20261103-002",
+        "ZC-20261104-001",
+        "ZC-20261109-001"
+      ],
+      "found": [
+        {
+          "id": "ZC-20261101-001",
+          "at": 1794272520000
+        },
+        {
+          "id": "ZC-20261101-002",
+          "at": 1794272590000
+        },
+        {
+          "id": "ZC-20261103-002",
+          "at": 1794272660000
+        }
+      ],
+      "by": "admin"
+    }
+  ],
+  "labelTemplates": [
+    {
+      "id": "TPL1794270000000",
+      "name": "热敏 50×30 · 自定义",
+      "custom": true,
+      "labelW": 50,
+      "labelH": 30,
+      "pageW": 50,
+      "pageH": 30,
+      "cols": 1,
+      "gap": 0,
+      "margin": 0,
+      "qr": 18,
+      "font": 8,
+      "layout": "row",
+      "style": "classic",
+      "title": "资产管理",
+      "showQr": true,
+      "frame": "solid",
+      "border": true,
+      "fields": [
+        "id",
+        "name",
+        "location"
+      ]
+    }
+  ],
+  "activeTemplate": "p-a4-3"
+}

@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: 语法检查与单文件构建
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 安装 Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: 语法检查
+        run: |
+          node --check app.js
+          node --check build-standalone.mjs
+
+      - name: 构建单文件版
+        run: node build-standalone.mjs
+
+      - name: 校验构建产物
+        run: |
+          FILE="资产管理.html"
+          if [ ! -f "$FILE" ]; then
+            echo "构建产物 $FILE 不存在"
+            exit 1
+          fi
+          SIZE=$(wc -c < "$FILE")
+          echo "产物体积：$SIZE 字节（约 $((SIZE / 1024)) KB）"
+          if [ "$SIZE" -lt 300000 ]; then
+            echo "产物体积小于 300KB，构建可能不完整"
+            exit 1
+          fi
