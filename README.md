@@ -2,7 +2,7 @@
 
 A single-page asset ledger and stocktaking app written in plain JavaScript. No framework, no build step, no npm dependencies — open `index.html` and it runs. Assets, stocktakes, label templates and accounts live in `localStorage`; photos are compressed in the browser and uploaded with a plain HTTP `PUT`. Includes QR label printing with 18 built-in templates and camera / serial-barcode stocktaking.
 
-**仓库**：[github.com/yongsjp41-crypto/asset-manager](https://github.com/yongsjp41-crypto/asset-manager) · **许可证**：[MIT](LICENSE) · **当前版本**：1.0.0
+**仓库**：[github.com/yongsjp41-crypto/asset-manager](https://github.com/yongsjp41-crypto/asset-manager) · **在线演示**：[yongsjp41-crypto.github.io/asset-manager](https://yongsjp41-crypto.github.io/asset-manager/) · **许可证**：[MIT](LICENSE) · **当前版本**：1.0.0
 
 ## 项目简介
 
@@ -78,7 +78,9 @@ python3 -m http.server 8000
 
 ### GitHub Pages 在线演示
 
-仓库已内置 `.github/workflows/pages.yml`。在仓库 **Settings → Pages → Source** 选择 **GitHub Actions**，之后向 `main` 推送或手动触发 `workflow_dispatch`，即可获得在线演示地址。
+在线演示：**<https://yongsjp41-crypto.github.io/asset-manager/>**
+
+仓库已启用 GitHub Pages，构建来源为 GitHub Actions（`.github/workflows/pages.yml`）。向 `main` 推送或手动触发 `workflow_dispatch` 会自动更新演示站。如果 fork 到自己的账号，在 **Settings → Pages → Source** 选择 **GitHub Actions** 即可启用。
 
 需要说明的是：Pages 是纯静态托管，不支持 `PUT` 上传，因此演示站上的照片只会存进访问者自己浏览器的 localStorage；每个访问者的数据也各自独立、互不可见，适合演示而不适合当作共享台账使用。
 
