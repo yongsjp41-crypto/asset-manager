@@ -4,6 +4,15 @@
   "description": "纯前端资产台账与扫码盘点的单页应用：资产建档、照片压缩上传、二维码标签打印、摄像头与串口扫码盘点，数据存于浏览器 localStorage，无需后端与构建依赖。",
   "license": "MIT",
   "private": false,
+  "author": "yongsjp41-crypto",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yongsjp41-crypto/asset-manager.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yongsjp41-crypto/asset-manager/issues"
+  },
+  "homepage": "https://github.com/yongsjp41-crypto/asset-manager#readme",
   "engines": {
     "node": ">=18"
   },

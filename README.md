@@ -2,6 +2,8 @@
 
 A single-page asset ledger and stocktaking app written in plain JavaScript. No framework, no build step, no npm dependencies — open `index.html` and it runs. Assets, stocktakes, label templates and accounts live in `localStorage`; photos are compressed in the browser and uploaded with a plain HTTP `PUT`. Includes QR label printing with 18 built-in templates and camera / serial-barcode stocktaking.
 
+**仓库**：[github.com/yongsjp41-crypto/asset-manager](https://github.com/yongsjp41-crypto/asset-manager) · **许可证**：[MIT](LICENSE) · **当前版本**：1.0.0
+
 ## 项目简介
 
 面向小型团队和行政、IT 资产管理的轻量工具。目标是「拷过去就能用」：把目录放到任意静态站点，或用 `node build-standalone.mjs` 打成单个 HTML 文件，双击打开即可建档、打印二维码标签、用手机或扫码枪盘点。没有服务端、没有数据库、没有账号体系依赖，代价是所有数据都绑在当前浏览器上，靠备份文件迁移。
@@ -35,6 +37,15 @@ A single-page asset ledger and stocktaking app written in plain JavaScript. No f
 - 唯一的运行时依赖是两个本地第三方库，已随仓库分发。
 
 ## 快速开始
+
+先拿到代码：
+
+```bash
+git clone https://github.com/yongsjp41-crypto/asset-manager.git
+cd asset-manager
+```
+
+也可以直接在仓库页面点 **Code → Download ZIP** 下载。
 
 ### 方式一：直接打开
 
@@ -150,7 +161,7 @@ asset-manager/
 
 ## 许可证
 
-[MIT](LICENSE)，Copyright (c) 2026 yongs。
+[MIT](LICENSE)，Copyright (c) 2026 yongsjp41-crypto。
 
 ## 第三方致谢
 

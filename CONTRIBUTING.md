@@ -7,7 +7,7 @@
 不需要安装任何依赖，不需要打包器，不需要 `npm install`。
 
 ```bash
-git clone <your-fork-url>
+git clone https://github.com/yongsjp41-crypto/asset-manager.git
 cd asset-manager
 python3 -m http.server 8000   # 或 npx serve .
 ```

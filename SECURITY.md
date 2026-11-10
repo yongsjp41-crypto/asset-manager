@@ -13,7 +13,7 @@
 
 如果你发现了安全问题，**请不要开公开 Issue**。
 
-请发送邮件至 `<your-email@example.com>`，并在邮件中尽量包含：
+本仓库已开启私密漏洞报告。请通过 [Security Advisories → Report a vulnerability](https://github.com/yongsjp41-crypto/asset-manager/security/advisories/new) 私下提交；若该入口不可用，可私信维护者 [@yongsjp41-crypto](https://github.com/yongsjp41-crypto)。报告中请尽量包含：
 
 - 受影响的版本或提交哈希
 - 复现步骤与最小复现文件

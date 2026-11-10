@@ -1,8 +1,8 @@
 blank_issues_enabled: false
 contact_links:
   - name: 安全问题
-    url: https://github.com/<your-account>/asset-manager/security/policy
+    url: https://github.com/yongsjp41-crypto/asset-manager/security/policy
     about: 请勿公开提交安全漏洞，按 SECURITY.md 的方式私下报告。
   - name: 使用与部署问题
-    url: https://github.com/<your-account>/asset-manager/blob/main/docs/DEPLOY.md
+    url: https://github.com/yongsjp41-crypto/asset-manager/blob/main/docs/DEPLOY.md
     about: 部署、HTTPS、照片上传接口的配置说明。
